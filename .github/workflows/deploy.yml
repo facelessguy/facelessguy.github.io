@@ -1,33 +1,51 @@
-name: Publish to Cloudflare Pages
+name: Deploy to GitHub Pages
+
 on:
-  workflow_dispatch:
   push:
     branches: [main]
+  workflow_dispatch:
+
 permissions:
   contents: read
+
 concurrency:
-  group: production-portfolio
+  group: github-pages
   cancel-in-progress: false
+
 jobs:
-  deploy:
-    if: vars.CLOUDFLARE_PAGES_PROJECT != '' && vars.SITE_URL != ''
+  build:
     runs-on: ubuntu-latest
-    environment: production
     env:
-      SITE_URL: ${{ vars.SITE_URL }}
+      SITE_URL: https://${{ github.repository_owner }}.github.io
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version-file: .nvmrc
           cache: npm
+
       - run: npm ci
       - run: npm run release:check
       - run: npm test
       - run: npm run test:site
       - run: npm run build
-      - uses: cloudflare/wrangler-action@v3
+
+      - uses: actions/upload-pages-artifact@v4
         with:
-          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy
+        id: deployment
+        uses: actions/deploy-pages@v4
