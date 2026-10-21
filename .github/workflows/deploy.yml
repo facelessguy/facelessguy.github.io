@@ -1,0 +1,33 @@
+name: Publish to Cloudflare Pages
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+concurrency:
+  group: production-portfolio
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: vars.CLOUDFLARE_PAGES_PROJECT != '' && vars.SITE_URL != ''
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      SITE_URL: ${{ vars.SITE_URL }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run release:check
+      - run: npm test
+      - run: npm run test:site
+      - run: npm run build
+      - uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          command: pages deploy dist --project-name=${{ vars.CLOUDFLARE_PAGES_PROJECT }} --branch=main

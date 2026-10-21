@@ -1,0 +1,33 @@
+{
+  "name": "portfolio-stage-one",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "ASTRO_TELEMETRY_DISABLED=1 astro dev",
+    "build": "npm run check:content && ASTRO_TELEMETRY_DISABLED=1 astro check && ASTRO_TELEMETRY_DISABLED=1 astro build",
+    "preview": "ASTRO_TELEMETRY_DISABLED=1 astro preview",
+    "check:content": "node scripts/check-content.mjs",
+    "test": "node --test tests/*.test.mjs",
+    "test:site": "node scripts/test-site.mjs",
+    "release:check": "node scripts/check-content.mjs --release"
+  },
+  "dependencies": {
+    "@astrojs/react": "6.0.5",
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/manrope": "5.3.0",
+    "astro": "7.3.2",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
+    "zod": "4.5.4"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "@types/react": "19.2.18",
+    "@types/react-dom": "19.2.7",
+    "yaml": "2.9.0"
+  },
+  "engines": {
+    "node": ">=22.18.0"
+  }
+}

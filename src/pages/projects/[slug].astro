@@ -1,0 +1,25 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedDemos } from '../../lib/projects';
+export async function getStaticPaths() {
+  return (await getCollection('projects', ({ data }) => data.status === 'published')).map(project => ({ params: { slug: project.id }, props: { project } }));
+}
+const { project } = Astro.props;
+const { data } = project;
+const { Content, headings } = await render(project);
+const demos = await getPublishedDemos();
+const demo = data.demo ? demos.find(d => d.id === data.demo && d.data.project === project.id) : undefined;
+if (data.demo && !demo) throw new Error(`Project ${project.id} references an unavailable demo.`);
+const toc = headings.filter(h => h.depth === 2);
+---
+<BaseLayout title={`${data.title} — кейс`} description={data.summary} image={data.cover && !data.cover.src.endsWith(".svg") ? data.cover.src : null} imageAlt={data.cover?.alt}>
+  <main id="main" class="wrap page-main case-page"><a class="back-link" href="/projects/" data-reveal>← Все работы</a>
+    <div class="case-header" data-reveal><div class="tags">{data.disciplines.map(tag => <span>{tag}</span>)}</div><h1 class="page-title">{data.title}</h1><p class="page-intro">{data.summary}</p></div>
+    <dl class="case-facts" data-reveal><div><dt>Моя роль</dt><dd>{data.role}</dd></div><div><dt>Год</dt><dd>{data.year}</dd></div><div><dt>Технологии</dt><dd>{data.technologies.length ? data.technologies.join(' · ') : 'Описаны в кейсе'}</dd></div></dl>
+    {data.cover && <figure class="case-cover" data-reveal><img src={data.cover.src} alt={data.cover.alt} width={data.cover.width} height={data.cover.height} decoding="async" /></figure>}
+    <div class="case-actions" data-reveal>{demo ? <a class="button" href={`/demos/${demo.id}/`}>Посмотреть демо ↗</a> : data.links.live && <a class="button" href={data.links.live} target="_blank" rel="noopener noreferrer">Открыть приложение ↗</a>}{data.links.source && <a class="button secondary" href={data.links.source} target="_blank" rel="noopener noreferrer">Посмотреть код ↗</a>}</div>
+    <div class:list={["case-body", { "without-toc": !toc.length }]} data-reveal>{toc.length > 0 && <aside><nav aria-label="Содержание кейса">{toc.map(h => <a href={`#${h.slug}`}>{h.text}</a>)}</nav></aside>}<article class="prose"><Content /></article></div>
+    <div class="case-end" data-reveal><a href="/projects/">← Другие работы</a><a href="/#contact">Обсудить задачу ↗</a></div>
+  </main>
+</BaseLayout>

@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ProjectExplorer from '../components/ProjectExplorer';
+import { getPublicProjects } from '../lib/projects';
+const projects = (await getPublicProjects()).filter(p => p.kind === 'experiment' && p.status === 'published');
+---
+<BaseLayout title="Лаборатория — Практика" noindex={!projects.length}>
+  <main id="main" class="wrap page-main"><div class="page-intro-block" data-reveal><p class="eyebrow">Поиск / Лаборатория</p><h1 class="page-title">Проверить<br /><span class="accent">идею.</span></h1><p class="page-intro">Небольшие эксперименты с интерфейсами, обучением и автоматизацией.</p></div>{projects.length ? <ProjectExplorer projects={projects} client:visible /> : <p class="empty-state" data-reveal>Опубликованных экспериментов пока нет.</p>}</main>
+</BaseLayout>

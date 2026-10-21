@@ -1,0 +1,11 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import ProjectExplorer from '../../components/ProjectExplorer';
+import { getPublicProjects } from '../../lib/projects';
+const projects = await getPublicProjects();
+---
+<BaseLayout title="Работы — Практика" description="Кейсы на пересечении обучения, продуктового подхода и разработки.">
+  <main id="main" class="wrap page-main"><div class="page-intro-block" data-reveal><p class="eyebrow">Каталог / Работы</p><h1 class="page-title">От контекста<br />к <span class="accent">результату.</span></h1><p class="page-intro">В каждом кейсе — задача, моя роль, причины решений и то, что получилось в итоге.</p></div>
+    {projects.length ? <ProjectExplorer projects={projects} client:visible /> : <div class="empty-work" data-reveal><span class="large-asterisk" aria-hidden="true">↗</span><div><h2 class="empty-title">Кейсы готовятся к публикации</h2><p>Подробные разборы появятся здесь после подготовки материалов.</p><a class="text-link" href="/#about">О подходе к работе ↗</a></div></div>}
+  </main>
+</BaseLayout>
