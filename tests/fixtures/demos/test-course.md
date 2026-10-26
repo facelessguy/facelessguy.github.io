@@ -3,11 +3,11 @@ title: Тестовый учебный интерактив
 summary: Проверочный сценарий из одного вопроса. Не является реальным курсом автора.
 project: course
 status: published
-format: HTML5
-launch: /demo-assets/test-course/index.html
+format: SCORM 1.2
+launch: /demo-assets/scorm/test-course/index.html
 duration: 1 минута
 ---
 
 ## Как попробовать
 
-Откройте демо, выберите вариант ответа и получите обратную связь. Прогресс не сохраняется; это технический тест.
+Техническая фикстура для проверки каталога мини-LMS и SCORM 1.2 runtime.

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="nick-asotov-prompting-basics" version="1.0"
+  xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2"
+  xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.imsproject.org/xsd/imscp_rootv1p1p2 imscp_rootv1p1p2.xsd http://www.adlnet.org/xsd/adlcp_rootv1p2 adlcp_rootv1p2.xsd">
+  <metadata><schema>ADL SCORM</schema><schemaversion>1.2</schemaversion></metadata>
+  <organizations default="prompting-organization">
+    <organization identifier="prompting-organization">
+      <title>Основы промптинга</title>
+      <item identifier="prompting-item" identifierref="prompting-resource" isvisible="true">
+        <title>Основы промптинга</title>
+        <adlcp:masteryscore>67</adlcp:masteryscore>
+      </item>
+    </organization>
+  </organizations>
+  <resources>
+    <resource identifier="prompting-resource" type="webcontent" adlcp:scormtype="sco" href="index.html">
+      <file href="index.html" />
+    </resource>
+  </resources>
+</manifest>

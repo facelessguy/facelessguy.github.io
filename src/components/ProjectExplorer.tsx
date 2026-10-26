@@ -62,7 +62,7 @@ export default function ProjectExplorer({
       )}
       <div className="project-grid">
         {visible.map((project) => (
-          <article className="project-card" key={project.slug} data-reveal>
+          <article className="project-card" key={project.slug}>
             {project.cover && (
               <div className="project-cover">
                 <img

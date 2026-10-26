@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Основы промптинга</title>
+  <desc id="desc">Обложка интерактивного курса о структуре запросов к ИИ</desc>
+  <rect width="1200" height="750" fill="#f3f1eb"/>
+  <path d="M0 570 1200 245v505H0Z" fill="#e8e5dd"/>
+  <circle cx="940" cy="255" r="170" fill="#d8402c"/>
+  <path d="M850 200h180M850 250h145M850 300h105" stroke="#f3f1eb" stroke-linecap="round" stroke-width="20"/>
+  <circle cx="1030" cy="365" r="48" fill="#d9f36a"/>
+  <path d="m1010 365 15 15 28-33" fill="none" stroke="#20221f" stroke-linecap="round" stroke-linejoin="round" stroke-width="11"/>
+  <text x="82" y="125" fill="#d8402c" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="5">ИНТЕРАКТИВНЫЙ КУРС / SCORM 1.2</text>
+  <text x="82" y="505" fill="#20221f" font-family="Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="-3">Основы</text>
+  <text x="82" y="590" fill="#20221f" font-family="Arial, sans-serif" font-size="78" font-weight="700" letter-spacing="-3">промптинга</text>
+</svg>

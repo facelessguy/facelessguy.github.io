@@ -60,6 +60,17 @@ test("demo ids cannot escape routes", () =>
     }).success,
     false,
   ));
+test("SCORM 1.2 is an accepted demo format", () =>
+  assert.equal(
+    demoSchema.safeParse({
+      title: "Курс",
+      summary: "SCORM демо",
+      project: "course",
+      launch: "/demo-assets/scorm/course/index.html",
+      format: "SCORM 1.2",
+    }).success,
+    true,
+  ));
 test("cover requires an accessible description and positive dimensions", () =>
   assert.equal(
     projectSchema.safeParse({

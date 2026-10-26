@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="750" viewBox="0 0 1200 750" role="img" aria-labelledby="title desc">
+  <title id="title">Охрана труда</title>
+  <desc id="desc">Обложка демонстрационного электронного курса по охране труда</desc>
+  <rect width="1200" height="750" fill="#171719"/>
+  <path d="M0 555 1200 210v540H0Z" fill="#222225"/>
+  <circle cx="965" cy="235" r="155" fill="#ff453a"/>
+  <path d="m965 130 94 36v77c0 75-49 123-94 148-45-25-94-73-94-148v-77z" fill="#171719"/>
+  <path d="m920 236 31 31 63-68" fill="none" stroke="#ff453a" stroke-linecap="round" stroke-linejoin="round" stroke-width="18"/>
+  <text x="82" y="125" fill="#ff685f" font-family="Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="5">ЭЛЕКТРОННЫЙ КУРС / SCORM 1.2</text>
+  <text x="82" y="520" fill="#f5f2ef" font-family="Arial, sans-serif" font-size="82" font-weight="700" letter-spacing="-3">Охрана труда</text>
+  <text x="86" y="582" fill="#aaa6a3" font-family="Arial, sans-serif" font-size="25">Интерактивный учебный модуль</text>
+</svg>

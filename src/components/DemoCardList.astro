@@ -1,0 +1,32 @@
+---
+interface DemoCard {
+  id: string;
+  data: {
+    title: string;
+    summary: string;
+    format: string;
+    duration?: string;
+  };
+}
+interface Props {
+  demos: DemoCard[];
+  publishedIds: Set<string>;
+}
+const { demos, publishedIds } = Astro.props;
+---
+<div class="demo-list">
+  {demos.map(({ id, data }, index) => {
+    const published = publishedIds.has(id);
+    return <article data-reveal>
+      <span class="demo-number">{String(index + 1).padStart(2, '0')}</span>
+      <div>
+        <p class="eyebrow">{data.format}{data.duration && ` / ${data.duration}`}{!published && ' / В подготовке'}</p>
+        <h3>{published ? <a href={`/demos/${id}/`}>{data.title} ↗</a> : data.title}</h3>
+        <p>{data.summary}</p>
+        {published && (data.format === 'SCORM 1.2'
+          ? <a class="text-link" href={`/lms/${id}/`}>Запустить в мини‑LMS ↗</a>
+          : <a class="text-link" href={`/demos/${id}/`}>Открыть демо ↗</a>)}
+      </div>
+    </article>;
+  })}
+</div>

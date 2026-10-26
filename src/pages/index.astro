@@ -1,12 +1,7 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import ProjectExplorer from '../components/ProjectExplorer';
-import { getPublicProjects } from '../lib/projects';
 import portrait from '../796129793.png';
-const allProjects = await getPublicProjects();
-const featured = allProjects.filter(p => p.featured).slice(0, 6);
-const technologies = [...new Set(allProjects.filter(p => p.status === 'published').flatMap(p => p.technologies))];
-import { profile, positioning } from '../config/profile';
+import { profile } from '../config/profile';
 ---
 <BaseLayout title={`${profile.name || 'Практика'} — обучение, продукты, разработка`}>
   <main id="main">
@@ -15,12 +10,11 @@ import { profile, positioning } from '../config/profile';
 
       <div class="hero-grid">
         <div class="profile-text">
-          <p class="hero-name">{profile.name || 'Практика'}</p>
-          <h1>От сложной задачи к<br /><span>работающему продукту.</span></h1>
-          <p class="hero-position">{positioning}</p>
+          <h1 class="hero-statement"> Здравствуйте, я — Ник Асотов, </h1>
+          <h1 class="hero-statement-red"> Методист-разработчик электронных курсов.</h1>
+          <h2 class="hero-highlight"><span>Создаю обучение, которое помогает разобраться в сложном и применить знания на практике.</span></h2>
           <div class="hero-actions">
-            <a href="#work" class="button">Смотреть работы <span aria-hidden="true">↓</span></a>
-            <a href="#contact" class="hero-secondary">Обсудить задачу ↗</a>
+            <a href="/projects/" class="button">Смотреть демо <span aria-hidden="true">↗</span></a>
           </div>
         </div>
         <figure class="profile">
@@ -28,27 +22,6 @@ import { profile, positioning } from '../config/profile';
           <figcaption><span>Обучение · Продукты · Разработка</span><span>01 / 04</span></figcaption>
         </figure>
       </div>
-      <div class="hero-rail" aria-hidden="true"><span>01 / Понять</span><span>02 / Спроектировать</span><span>03 / Собрать</span><span>04 / Проверить</span></div>
     </section>
-    <section class="section wrap" id="work" data-reveal>
-      <div class="section-heading"><p class="eyebrow">01 / Избранные работы</p><h2>Решения.<br /><span class="muted">И путь к ним.</span></h2></div>
-      {featured.length ? <ProjectExplorer projects={featured} client:visible /> : <div class="empty-work" data-reveal><span class="large-asterisk" aria-hidden="true">↗</span><div><h3>Кейсы готовятся к публикации</h3><p>Здесь будут задачи, ключевые решения и результаты работы — с кодом и живыми демо там, где их можно показать.</p></div></div>}
-      {allProjects.length > 0 && <div class="featured-more"><a class="text-link" href="/projects/">Все работы ↗</a></div>}
-    </section>
-    <section class="section expertise" id="about" data-reveal><div class="wrap">
-      <div class="section-heading"><p class="eyebrow">02 / О подходе</p><h2>Вижу целое.<br />Работаю с деталями.</h2></div>
-      <p class="about-lead">{profile.bio || 'Обучение, продукт и разработка соединяются вокруг одной задачи: сделать сложное понятным и превратить идею в полезный инструмент.'}</p>
-      <div class="expertise-list"><article><span>01</span><h3>Обучение</h3><p>От учебной задачи и сценария до интерактива, практики и оценки результата.</p></article><article><span>02</span><h3>Продукт</h3><p>От понимания потребности до выбора решения и проверки гипотезы.</p></article><article><span>03</span><h3>Разработка</h3><p>От логики интерфейса до работающего приложения и автоматизации.</p></article></div>
-      {technologies.length > 0 && <div class="tools" aria-label="Технологии из опубликованных работ">{technologies.map(t => <span>{t}</span>)}</div>}
-    </div></section>
-    <section class="section wrap" id="process" data-reveal><div class="section-heading"><p class="eyebrow">03 / От вопроса к проверке</p><h2>Как рождается<br />решение</h2></div>
-      <div class="process-grid">{[
-        ['Понять', 'Какую проблему решаем?', 'Контекст, аудитория и ограничения. Сначала — задача человека и критерий успеха.'],
-        ['Спроектировать', 'Почему именно так?', 'Сценарии, альтернативы и прототип. У каждого решения должна быть причина.'],
-        ['Собрать', 'Как это работает?', 'Интерфейс, контент и код. Достаточно, чтобы проверить идею в действии.'],
-        ['Проверить', 'Что изменилось?', 'Обратная связь и наблюдения. Результат определяет следующий шаг.'],
-      ].map(([title, question, text], i) => <details class="process-step" open={i === 0}><summary><span class="step-number">0{i + 1}</span><h3>{title}</h3><span class="expand" aria-hidden="true">+</span></summary><div><h4>{question}</h4><p>{text}</p></div></details>)}</div>
-    </section>
-    <section class="contact" id="contact" data-reveal><div class="wrap"><p class="eyebrow">04 / Следующий шаг</p><h2>Давайте обсудим<br /><span>вашу задачу.</span></h2>{profile.email ? <a class="contact-link" href={`mailto:${profile.email}`}>{profile.email} ↗</a> : <p class="contact-pending">Контакты появятся вместе с первыми кейсами.</p>}{profile.links.map(link => <a class="social-link" href={link.url} target="_blank" rel="noopener noreferrer">{link.label} ↗</a>)}</div></section>
   </main>
 </BaseLayout>

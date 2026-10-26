@@ -68,7 +68,7 @@ export const demoSchema = z.object({
   status: z.enum(["draft", "published"]).default("draft"),
   project: slugSchema,
   launch: publicLink,
-  format: z.enum(["HTML5", "iSpring", "Web app", "API"]),
+  format: z.enum(["HTML5", "SCORM 1.2", "iSpring", "Web app", "API", "Video"]),
   duration: z.string().optional(),
   requirements: z
     .string()

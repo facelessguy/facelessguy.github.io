@@ -30,6 +30,14 @@ function readCollection(name, schema) {
 }
 function localFile(url, label) {
   if (!url?.startsWith("/")) return;
+  const scormPath = /^\/demo-assets\/scorm\/([a-z0-9]+(?:-[a-z0-9]+)*)\/(.+)$/.exec(url);
+  if (scormPath) {
+    const scormRoot = fixtures ? "tests/fixtures/scorm" : "src/scorm";
+    const file = path.join(scormRoot, scormPath[1], scormPath[2]);
+    if (!fs.existsSync(file) || !fs.statSync(file).isFile())
+      errors.push(`${label}: missing SCORM package source ${url}`);
+    return;
+  }
   const candidate = path.join(publicDir, url);
   const file = url.endsWith("/")
     ? path.join(candidate, "index.html")
@@ -88,6 +96,46 @@ try {
       errors.push(`${d.slug}: parent project is not published`);
     localFile(d.data.launch, d.slug);
     assetLinks(d.body, d.slug);
+    if (d.data.format === "SCORM 1.2") {
+      const root = path.join(fixtures ? "tests/fixtures/scorm" : "src/scorm", d.slug);
+      const manifest = path.join(root, "imsmanifest.xml");
+      if (fs.existsSync(manifest)) {
+        const xml = fs.readFileSync(manifest, "utf8");
+        const launch = /<resource\b[^>]*\bhref=["']([^"']+)["']/i.exec(xml)?.[1];
+        if (!launch || !fs.existsSync(path.join(root, launch)))
+          errors.push(`${d.slug}: SCORM manifest launch resource is missing`);
+        for (const match of xml.matchAll(/<file\b[^>]*\bhref=["']([^"']+)["']/gi)) {
+          const resource = path.resolve(root, match[1]);
+          if (!resource.startsWith(`${path.resolve(root)}${path.sep}`) || !fs.existsSync(resource))
+            errors.push(`${d.slug}: SCORM manifest references missing or unsafe file ${match[1]}`);
+        }
+      }
+    }
+    if (d.data.format === "Video") {
+      if (!d.data.launch.endsWith(".m3u8")) {
+        errors.push(`${d.slug}: Video demos must launch an HLS playlist`);
+      } else {
+        const playlistFile = path.join(publicDir, d.data.launch);
+        if (fs.existsSync(playlistFile)) {
+          const playlist = fs.readFileSync(playlistFile, "utf8");
+          const playlistDir = path.dirname(playlistFile);
+          const segments = playlist
+            .split(/\r?\n/)
+            .map((line) => line.trim())
+            .filter((line) => line && !line.startsWith("#"));
+          if (!segments.length) errors.push(`${d.slug}: HLS playlist has no segments`);
+          for (const segment of segments) {
+            const file = path.resolve(playlistDir, segment);
+            if (!file.startsWith(`${path.resolve(playlistDir)}${path.sep}`) || !fs.existsSync(file)) {
+              errors.push(`${d.slug}: missing or unsafe HLS segment ${segment}`);
+              continue;
+            }
+            if (fs.statSync(file).size > 25 * 1024 * 1024)
+              errors.push(`${d.slug}: HLS segment exceeds Cloudflare Pages 25 MiB limit`);
+          }
+        }
+      }
+    }
   }
   function walk(dir) {
     for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {

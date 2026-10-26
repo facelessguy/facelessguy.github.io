@@ -18,8 +18,8 @@ const toc = headings.filter(h => h.depth === 2);
     <div class="case-header" data-reveal><div class="tags">{data.disciplines.map(tag => <span>{tag}</span>)}</div><h1 class="page-title">{data.title}</h1><p class="page-intro">{data.summary}</p></div>
     <dl class="case-facts" data-reveal><div><dt>Моя роль</dt><dd>{data.role}</dd></div><div><dt>Год</dt><dd>{data.year}</dd></div><div><dt>Технологии</dt><dd>{data.technologies.length ? data.technologies.join(' · ') : 'Описаны в кейсе'}</dd></div></dl>
     {data.cover && <figure class="case-cover" data-reveal><img src={data.cover.src} alt={data.cover.alt} width={data.cover.width} height={data.cover.height} decoding="async" /></figure>}
-    <div class="case-actions" data-reveal>{demo ? <a class="button" href={`/demos/${demo.id}/`}>Посмотреть демо ↗</a> : data.links.live && <a class="button" href={data.links.live} target="_blank" rel="noopener noreferrer">Открыть приложение ↗</a>}{data.links.source && <a class="button secondary" href={data.links.source} target="_blank" rel="noopener noreferrer">Посмотреть код ↗</a>}</div>
+    <div class="case-actions" data-reveal>{demo ? <><a class="button" href={`/demos/${demo.id}/`}>Посмотреть демо ↗</a>{demo.data.format === 'SCORM 1.2' && <a class="button secondary" href={`/lms/${demo.id}/`}>Запустить в мини‑LMS ↗</a>}</> : data.links.live && <a class="button" href={data.links.live} target="_blank" rel="noopener noreferrer">Открыть приложение ↗</a>}{data.links.source && <a class="button secondary" href={data.links.source} target="_blank" rel="noopener noreferrer">Посмотреть код ↗</a>}</div>
     <div class:list={["case-body", { "without-toc": !toc.length }]} data-reveal>{toc.length > 0 && <aside><nav aria-label="Содержание кейса">{toc.map(h => <a href={`#${h.slug}`}>{h.text}</a>)}</nav></aside>}<article class="prose"><Content /></article></div>
-    <div class="case-end" data-reveal><a href="/projects/">← Другие работы</a><a href="/#contact">Обсудить задачу ↗</a></div>
+    <div class="case-end" data-reveal><a href="/projects/">← Другие работы</a></div>
   </main>
 </BaseLayout>

@@ -34,8 +34,7 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site) : undefin
     <a href="#main" class="skip-link">Перейти к содержимому</a>
     <header class="site-header wrap">
       <a class="brand" href="/" aria-label="На главную"><span class="brand-mark" aria-hidden="true">↗</span><span>{profile.name || 'Практика'}<small>Обучение · Продукты · Разработка</small></span></a>
-      <nav aria-label="Основная навигация"><a href="/projects/">Работы</a><a href="/demos/">Демо</a>{hasLab && <a href="/lab/">Лаборатория</a>}<a href="/#about">Обо мне</a></nav>
-      <a class="header-contact" href="/#contact">Контакты <span aria-hidden="true">↗</span></a>
+      <nav aria-label="Основная навигация"><a href="/projects/">Работы</a>{hasLab && <a href="/lab/">Лаборатория</a>}</nav>
     </header>
     <slot />
     <footer class="wrap site-footer"><span>© {new Date().getFullYear()} {profile.name || 'Практика'}</span><span>От задачи к работающему продукту</span><a href="#main">Наверх ↑</a></footer>

@@ -1,0 +1,38 @@
+---
+interface Props {
+  src: string;
+  poster?: string;
+  title: string;
+}
+
+const { src, poster, title } = Astro.props;
+---
+<section class="video-player" aria-label={`Видео: ${title}`}>
+  <video controls playsinline preload="metadata" poster={poster} data-hls-player data-source={src} aria-label={title}></video>
+  <p class="video-player-note">Воспроизведение доступно прямо в браузере. Можно поставить на паузу и продолжить с нужного места.</p>
+  <p data-video-unsupported hidden>Браузер не поддерживает встроенное воспроизведение этого видео. <a href={src}>Открыть видео отдельно ↗</a></p>
+  <noscript><p>Для запуска плеера включите JavaScript. <a href={src}>Открыть видео отдельно ↗</a></p></noscript>
+</section>
+
+<script>
+  import Hls from 'hls.js/light';
+
+  const video = document.querySelector<HTMLVideoElement>('[data-hls-player]');
+  const unsupported = document.querySelector<HTMLElement>('[data-video-unsupported]');
+  const source = video?.dataset.source;
+
+  if (video && source) {
+    if (Hls.isSupported()) {
+      const player = new Hls();
+      player.on(Hls.Events.ERROR, (_event, details) => {
+        if (details.fatal && unsupported) unsupported.hidden = false;
+      });
+      player.loadSource(source);
+      player.attachMedia(video);
+    } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+      video.src = source;
+    } else if (unsupported) {
+      unsupported.hidden = false;
+    }
+  }
+</script>

@@ -41,6 +41,6 @@ npm run release:check
 - `docs/DEPLOYMENT.md` — настройка GitHub Actions, Cloudflare Pages, домена и откат.
 - `docs/NEXT-STAGES.md` — условия запуска аналитики и VPS.
 
-Markdown хранится в `src/content/projects` и `src/content/demos`. Реальные публичные изображения и экспорты — в `public/media` и `public/demo-assets`. Всё в `public/` доступно посетителям независимо от статуса Markdown. Не кладите туда закрытые или черновые материалы.
+Markdown хранится в `src/content/projects` и `src/content/demos`. Публичные изображения и самостоятельные HTML5-экспорты размещаются в `public/media` и `public/demo-assets`; всё в `public/` доступно посетителям независимо от статуса Markdown. Встроенный SCORM 1.2 пакет мини‑LMS хранится в `src/scorm` и попадает в статическую сборку только вместе с опубликованной записью демо. Не кладите черновые материалы в `public/`.
 
 `sources/` — синхронизируемые справочные материалы, только для чтения; они не редактируются и не публикуются автоматически.

@@ -1,0 +1,111 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPublishedScormDemos } from '../../lib/scorm-packages';
+import { getScormLaunchFile } from '../../lib/scorm-packages';
+type ScormDemo = Awaited<ReturnType<typeof getPublishedScormDemos>>[number];
+interface Props { view: 'catalog' | 'player'; courses?: ScormDemo[]; demo?: ScormDemo; }
+export async function getStaticPaths() {
+  const courses = await getPublishedScormDemos();
+  if (!courses.length) return [];
+  return [
+    { params: { path: undefined }, props: { view: 'catalog', courses } },
+    ...courses.map((demo) => ({ params: { path: demo.id }, props: { view: 'player', demo } })),
+  ];
+}
+const { view, courses = [], demo } = Astro.props;
+if (view === 'player' && !demo) throw new Error('The LMS player requires a published SCORM demo.');
+const title = view === 'catalog' ? 'Мини‑LMS — Практика' : `${demo!.data.title} — мини‑LMS`;
+const description = view === 'catalog'
+  ? 'Демонстрационная учебная платформа с поддержкой SCORM 1.2.'
+  : 'Демонстрация запуска курса SCORM 1.2.';
+const launchUrl = demo ? `/demo-assets/scorm/${demo.id}/${getScormLaunchFile(demo.id)}` : '';
+---
+<BaseLayout title={title} description={description} image={null}>
+  {view === 'catalog' ? <main id="main" class="wrap page-main lms-page">
+    <div class="page-intro-block" data-reveal>
+      <p class="eyebrow">Учебная платформа / SCORM 1.2</p>
+      <h1 class="page-title">Мини‑LMS</h1>
+      <p class="page-intro">Мини‑LMS демонстрирует запуск SCORM‑курса и фиксацию прогресса в браузере. Аккаунт не нужен.</p>
+    </div>
+    <section class="lms-course-list" aria-label="Курсы">
+      {courses.map(({ id, data }) => <article class="lms-course-card" data-course={id} data-reveal>
+        <div class="lms-course-index" aria-hidden="true">01</div>
+        <div class="lms-course-copy"><p class="eyebrow">{data.format} / {data.duration ?? 'Самостоятельно'}</p><h2>{data.title}</h2><p>{data.summary}</p>
+          <dl class="lms-course-status"><div><dt>Состояние</dt><dd data-status>Не начат</dd></div><div><dt>Прогресс</dt><dd data-progress>0 / 8 шагов</dd></div><div><dt>Результат</dt><dd data-score>—</dd></div></dl>
+          <div class="lms-actions"><a class="button" href={`/lms/${id}/`} data-launch>Открыть курс ↗</a><button class="text-button" type="button" data-reset>Сбросить прогресс</button></div>
+        </div>
+      </article>)}
+    </section>
+    <p class="lms-privacy-note" data-reveal>Попытка и прогресс хранятся только в локальном хранилище этого браузера. Данные не отправляются и не синхронизируются между устройствами.</p>
+  </main> : <main id="main" class="wrap page-main lms-player-page" data-lms-course data-course-id={demo!.id} data-launch-url={launchUrl}>
+    <a class="back-link" href="/lms/" data-reveal>← Каталог мини‑LMS</a>
+    <header class="lms-player-heading" data-reveal><div><p class="eyebrow">SCORM 1.2 / Учебный модуль</p><h1 class="page-title">{demo!.data.title}</h1><p class="page-intro">Прогресс фиксируется локально в этом браузере.</p></div><div class="lms-player-result" aria-live="polite"><span class="eyebrow">Статус</span><strong data-status>Не начат</strong><span data-score>Результат появится после завершения</span></div></header>
+    <div class="lms-player-toolbar" data-reveal><p data-progress>Загрузка курса…</p><button class="text-button" type="button" data-reset>Сбросить и начать заново</button></div>
+    <div class="lms-frame-wrap" data-reveal><iframe data-course-frame title={`Учебный курс: ${demo!.data.title}`} loading="eager" referrerpolicy="same-origin"></iframe><noscript><p class="lms-frame-fallback">Для запуска интерактивного SCORM‑курса включите JavaScript.</p></noscript></div>
+    <p class="lms-privacy-note" data-reveal>Демо использует встроенный SCORM 1.2 runtime. Ответы и прогресс не покидают устройство.</p>
+  </main>}
+</BaseLayout>
+<script>
+  import { createScorm12Api, readScormSnapshot } from '../../lib/scorm12';
+
+  const player = document.querySelector<HTMLElement>('[data-lms-course]');
+  if (player) {
+    const courseId = player.dataset.courseId;
+    const launchUrl = player.dataset.launchUrl;
+    const status = document.querySelector<HTMLElement>('[data-status]');
+    const score = document.querySelector<HTMLElement>('[data-score]');
+    const progress = document.querySelector<HTMLElement>('[data-progress]');
+    const frame = document.querySelector<HTMLIFrameElement>('[data-course-frame]');
+    const statusLabels: Record<string, string> = {
+      'not attempted': 'Не начат', incomplete: 'В процессе', completed: 'Завершён',
+      passed: 'Пройден', failed: 'Нужна ещё попытка', browsed: 'Просмотрен',
+    };
+    const update = (snapshot: ReturnType<ReturnType<typeof createScorm12Api>['getSnapshot']>) => {
+      if (status) status.textContent = statusLabels[snapshot.status] ?? 'Не начат';
+      if (score) score.textContent = snapshot.score ? `Результат: ${snapshot.score}%` : 'Результат появится после завершения';
+      if (progress) progress.textContent = snapshot.location ? `Сохранён шаг ${Number(snapshot.location) + 1} курса` : 'Новая попытка';
+    };
+    if (!courseId || !launchUrl) throw new Error('SCORM course metadata is missing.');
+    const runtime = createScorm12Api(localStorage, courseId, update);
+    if (new URLSearchParams(location.search).get('restart') === '1') runtime.reset();
+    (window as unknown as { API: typeof runtime.api }).API = runtime.api;
+    update(runtime.getSnapshot());
+    if (frame) frame.src = launchUrl;
+    document.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+      runtime.reset();
+      if (frame) frame.src = launchUrl;
+      update(runtime.getSnapshot());
+    });
+  } else {
+    const statusLabels: Record<string, string> = {
+      'not attempted': 'Не начат', incomplete: 'В процессе', completed: 'Завершён',
+      passed: 'Пройден', failed: 'Нужна ещё попытка', browsed: 'Просмотрен',
+    };
+    document.querySelectorAll<HTMLElement>('[data-course]').forEach((card) => {
+      const courseId = card.dataset.course;
+      if (!courseId) return;
+      const status = card.querySelector<HTMLElement>('[data-status]');
+      const score = card.querySelector<HTMLElement>('[data-score]');
+      const progress = card.querySelector<HTMLElement>('[data-progress]');
+      const launch = card.querySelector<HTMLAnchorElement>('[data-launch]');
+      const key = `portfolio:lms:scorm12:${courseId}`;
+      const update = () => {
+        const snapshot = readScormSnapshot(localStorage, key);
+        if (status) status.textContent = statusLabels[snapshot.status] ?? 'Не начат';
+        if (score) score.textContent = snapshot.score ? `${snapshot.score}%` : '—';
+        if (progress) progress.textContent = snapshot.status === 'not attempted' ? '0 / 8 шагов' : `${Math.min(Number(snapshot.location || 0) + 1, 8)} / 8 шагов`;
+        if (launch) {
+          const terminal = snapshot.status === 'passed' || snapshot.status === 'failed';
+          launch.textContent = terminal ? 'Пройти заново ↗' : snapshot.location ? 'Продолжить курс ↗' : 'Открыть курс ↗';
+          launch.href = `/lms/${courseId}/${terminal ? '?restart=1' : ''}`;
+        }
+      };
+      update();
+      window.addEventListener('storage', (event) => { if (event.key === key) update(); });
+      card.querySelector<HTMLButtonElement>('[data-reset]')?.addEventListener('click', () => {
+        localStorage.removeItem(key);
+        update();
+      });
+    });
+  }
+</script>

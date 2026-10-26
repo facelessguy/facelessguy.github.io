@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest identifier="fixture-course" version="1.0" xmlns="http://www.imsproject.org/xsd/imscp_rootv1p1p2" xmlns:adlcp="http://www.adlnet.org/xsd/adlcp_rootv1p2" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <organizations default="fixture-org"><organization identifier="fixture-org"><title>Fixture SCORM course</title><item identifier="fixture-item" identifierref="fixture-resource"><title>Fixture course</title></item></organization></organizations>
+  <resources><resource identifier="fixture-resource" type="webcontent" adlcp:scormtype="sco" href="index.html"><file href="index.html" /><file href="runtime.js" /></resource></resources>
+</manifest>

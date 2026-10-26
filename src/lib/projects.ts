@@ -27,3 +27,12 @@ export async function getPublishedDemos() {
     (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
   );
 }
+
+export async function getAllDemos() {
+  const demos = await getCollection("demos");
+  return demos
+    .map(({ id, data }) => ({ id: slugSchema.parse(id), data }))
+    .sort(
+      (a, b) => a.data.order - b.data.order || a.id.localeCompare(b.id),
+    );
+}

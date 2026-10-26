@@ -1,10 +1,3 @@
 ---
-import BaseLayout from '../../layouts/BaseLayout.astro';
-import { getPublishedDemos } from '../../lib/projects';
-const demos = await getPublishedDemos();
+return Astro.redirect('/projects/');
 ---
-<BaseLayout title="Демо — Практика" description="Интерактивные курсы и приложения, которые можно попробовать в браузере.">
-  <main id="main" class="wrap page-main"><div class="page-intro-block" data-reveal><p class="eyebrow">В действии / Демо</p><h1 class="page-title">Можно<br /><span class="accent">попробовать.</span></h1><p class="page-intro">Курсы, интерактивы и приложения. Запустите демо, а затем загляните в кейс — там объясняю, как устроено решение.</p></div>
-  {demos.length ? <div class="demo-list">{demos.map(({ id, data }, i) => <article data-reveal><span class="demo-number">0{i + 1}</span><div><p class="eyebrow">{data.format}{data.duration && ` / ${data.duration}`}</p><h2><a href={`/demos/${id}/`}>{data.title} ↗</a></h2><p>{data.summary}</p></div></article>)}</div> : <div class="empty-work" data-reveal><span class="large-asterisk" aria-hidden="true">↗</span><div><h2 class="empty-title">Первые демо — в подготовке</h2><p>Здесь появятся версии работ, доступные для самостоятельного знакомства.</p><a class="text-link" href="/projects/">Перейти к работам ↗</a></div></div>}
-  </main>
-</BaseLayout>
