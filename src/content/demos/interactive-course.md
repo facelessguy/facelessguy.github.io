@@ -1,7 +1,7 @@
 ---
 title: Основы промптинга
 summary: "Короткий интерактивный курс для новичков: составьте запрос к ИИ, уточните ответ и проверьте важные сведения."
-status: published
+status: draft
 project: interactive-course
 format: SCORM 1.2
 duration: 8–10 минут

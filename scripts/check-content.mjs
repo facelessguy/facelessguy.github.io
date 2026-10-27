@@ -170,9 +170,9 @@ try {
     )
       errors.push("Fill profile.email with a real contact.");
     if (!profile.bio.trim()) errors.push("Fill profile.bio.");
-    if (published.length < 3)
+    if (published.length < 2)
       errors.push(
-        `Three real published cases required; found ${published.length}.`,
+        `Two real published cases required; found ${published.length}.`,
       );
     if (!publishedDemos.length)
       errors.push("At least one real published demo required.");

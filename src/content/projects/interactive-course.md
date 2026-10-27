@@ -3,7 +3,7 @@ title: «Основы промптинга»
 summary: Демо-курс для новичков о том, как составлять запросы к ИИ, уточнять ответы и проверять важные сведения.
 disciplines: [E-learning, Development]
 kind: demo
-status: published
+status: draft
 year: 2026
 order: 2
 featured: false
