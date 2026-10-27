@@ -39,5 +39,5 @@ backups/
 # Synced reference material is not website source
 sources/
 
-# Keep the original high-resolution video local; the redacted HLS version is published from public/.
+# Keep the original video local; the prepared HLS version is published from public/.
 src/scorm/n8n Introduction.mp4
