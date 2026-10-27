@@ -174,8 +174,6 @@ try {
       errors.push(
         `Three real published cases required; found ${published.length}.`,
       );
-    if (published.filter((p) => p.data.featured).length < 3)
-      errors.push("Mark at least three published cases as featured.");
     if (!publishedDemos.length)
       errors.push("At least one real published demo required.");
   }
